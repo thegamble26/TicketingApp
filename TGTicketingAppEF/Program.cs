@@ -35,9 +35,6 @@ namespace TGTicketingAppEF
                     {
                         if (LSelection == "1") // Display
                         {
-                            // this is a change I made
-                            // Rocket Power
-                            // woogity woogity woogity
                             Console.WriteLine("You chose Display Tickets");
                             int tCount = 0;
 

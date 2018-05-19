@@ -10,7 +10,7 @@ namespace TGTicketingAppEF
     {
         public void DisplayUsers()
         {
-            Console.WriteLine("UserID: {0} - Name: {1}", this.User.UserID, this.User.FirstName + this.User.LastName);
+            Console.WriteLine("UserID: {0} - Name: {1}", this.User.UserID, this.User.FirstName + " " + this.User.LastName);
         }
         public void DisplayTickets()
         {
@@ -19,7 +19,7 @@ namespace TGTicketingAppEF
             Console.WriteLine("Watching Users:");
             foreach(var u in this.WatchingUsers)
             {
-                Console.WriteLine(u.User);
+                Console.WriteLine("UserID: {0} - Name: {1}", u.User.UserID, this.User.FirstName + " " + this.User.LastName);
             }
         }
     }
