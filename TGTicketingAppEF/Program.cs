@@ -72,7 +72,9 @@ namespace TGTicketingAppEF
                             break;
                         }
                         else if (LSelection == "2") // Add
-                        { }
+                        {
+
+                        }
                         else if (LSelection == "3") // Update
                         { }
                         else if (LSelection == "4") // Exit
