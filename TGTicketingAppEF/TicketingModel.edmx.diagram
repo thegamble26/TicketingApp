@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d106661a775f4b3c8590a0e7b414dbe2" Name="Diagram1">
+        <EntityTypeShape EntityType="TicketDB_TGModel.BugAttribute" Width="1.5" PointX="5.25" PointY="2.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketDB_TGModel.EnhancementAttribute" Width="1.5" PointX="5.25" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketDB_TGModel.TaskAttribute" Width="1.5" PointX="5.25" PointY="8.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketDB_TGModel.Ticket" Width="1.5" PointX="3" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketDB_TGModel.TicketType" Width="1.5" PointX="0.75" PointY="2.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketDB_TGModel.User" Width="1.5" PointX="0.75" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="TicketDB_TGModel.WatchingUser" Width="1.5" PointX="8.25" PointY="5.5" IsExpanded="true" />
+        <AssociationConnector Association="TicketDB_TGModel.FK_Bug_Ticket" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketDB_TGModel.FK_Enhance_Ticket" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketDB_TGModel.FK_Task_Ticket" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketDB_TGModel.FK_Assigned_User" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketDB_TGModel.FK_Submit_User" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketDB_TGModel.FK_Tickets_TicketType" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketDB_TGModel.FK_Watching_Ticket" ManuallyRouted="false" />
+        <AssociationConnector Association="TicketDB_TGModel.FK_Watching_Users" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

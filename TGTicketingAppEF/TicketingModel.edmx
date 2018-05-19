@@ -1,0 +1,534 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="TicketDB_TGModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="BugAttributes">
+          <Key>
+            <PropertyRef Name="BugAttrID" />
+          </Key>
+          <Property Name="BugAttrID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TicketID" Type="int" Nullable="false" />
+          <Property Name="Severity" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EnhancementAttributes">
+          <Key>
+            <PropertyRef Name="EnhanceAttrID" />
+          </Key>
+          <Property Name="EnhanceAttrID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TicketID" Type="int" Nullable="false" />
+          <Property Name="Software" Type="varchar" MaxLength="50" />
+          <Property Name="Cost" Type="varchar" MaxLength="50" />
+          <Property Name="Reason" Type="varchar" MaxLength="500" />
+          <Property Name="Estimate" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="TaskAttributes">
+          <Key>
+            <PropertyRef Name="TaskAttrID" />
+          </Key>
+          <Property Name="TaskAttrID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TicketID" Type="int" Nullable="false" />
+          <Property Name="ProjectName" Type="varchar" MaxLength="50" />
+          <Property Name="DueDate" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Tickets">
+          <Key>
+            <PropertyRef Name="TicketID" />
+          </Key>
+          <Property Name="TicketID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Summary" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Priority" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Submitter" Type="int" Nullable="false" />
+          <Property Name="Assigned" Type="int" Nullable="false" />
+          <Property Name="TicketTypeID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TicketType">
+          <Key>
+            <PropertyRef Name="TicketTypeID" />
+          </Key>
+          <Property Name="TicketTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="LastName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Department" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Enabled" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WatchingUsers">
+          <Key>
+            <PropertyRef Name="WatchingUserID" />
+          </Key>
+          <Property Name="WatchingUserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="TicketID" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Assigned_User">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Tickets">
+              <PropertyRef Name="Assigned" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Bug_Ticket">
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="1" />
+          <End Role="BugAttributes" Type="Self.BugAttributes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tickets">
+              <PropertyRef Name="TicketID" />
+            </Principal>
+            <Dependent Role="BugAttributes">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Enhance_Ticket">
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="1" />
+          <End Role="EnhancementAttributes" Type="Self.EnhancementAttributes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tickets">
+              <PropertyRef Name="TicketID" />
+            </Principal>
+            <Dependent Role="EnhancementAttributes">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Submit_User">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Tickets">
+              <PropertyRef Name="Submitter" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Task_Ticket">
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="1" />
+          <End Role="TaskAttributes" Type="Self.TaskAttributes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tickets">
+              <PropertyRef Name="TicketID" />
+            </Principal>
+            <Dependent Role="TaskAttributes">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tickets_TicketType">
+          <End Role="TicketType" Type="Self.TicketType" Multiplicity="1" />
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TicketType">
+              <PropertyRef Name="TicketTypeID" />
+            </Principal>
+            <Dependent Role="Tickets">
+              <PropertyRef Name="TicketTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Watching_Ticket">
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="1" />
+          <End Role="WatchingUsers" Type="Self.WatchingUsers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tickets">
+              <PropertyRef Name="TicketID" />
+            </Principal>
+            <Dependent Role="WatchingUsers">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Watching_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="WatchingUsers" Type="Self.WatchingUsers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="WatchingUsers">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TicketDB_TGModelStoreContainer">
+          <EntitySet Name="BugAttributes" EntityType="Self.BugAttributes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EnhancementAttributes" EntityType="Self.EnhancementAttributes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TaskAttributes" EntityType="Self.TaskAttributes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tickets" EntityType="Self.Tickets" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TicketType" EntityType="Self.TicketType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WatchingUsers" EntityType="Self.WatchingUsers" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Assigned_User" Association="Self.FK_Assigned_User">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Bug_Ticket" Association="Self.FK_Bug_Ticket">
+            <End Role="Tickets" EntitySet="Tickets" />
+            <End Role="BugAttributes" EntitySet="BugAttributes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Enhance_Ticket" Association="Self.FK_Enhance_Ticket">
+            <End Role="Tickets" EntitySet="Tickets" />
+            <End Role="EnhancementAttributes" EntitySet="EnhancementAttributes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Submit_User" Association="Self.FK_Submit_User">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_Ticket" Association="Self.FK_Task_Ticket">
+            <End Role="Tickets" EntitySet="Tickets" />
+            <End Role="TaskAttributes" EntitySet="TaskAttributes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tickets_TicketType" Association="Self.FK_Tickets_TicketType">
+            <End Role="TicketType" EntitySet="TicketType" />
+            <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Watching_Ticket" Association="Self.FK_Watching_Ticket">
+            <End Role="Tickets" EntitySet="Tickets" />
+            <End Role="WatchingUsers" EntitySet="WatchingUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Watching_Users" Association="Self.FK_Watching_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="WatchingUsers" EntitySet="WatchingUsers" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="TicketDB_TGModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="BugAttribute">
+          <Key>
+            <PropertyRef Name="BugAttrID" />
+          </Key>
+          <Property Name="BugAttrID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TicketID" Type="Int32" Nullable="false" />
+          <Property Name="Severity" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Ticket" Relationship="Self.FK_Bug_Ticket" FromRole="BugAttributes" ToRole="Tickets" />
+        </EntityType>
+        <EntityType Name="EnhancementAttribute">
+          <Key>
+            <PropertyRef Name="EnhanceAttrID" />
+          </Key>
+          <Property Name="EnhanceAttrID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TicketID" Type="Int32" Nullable="false" />
+          <Property Name="Software" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Cost" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Reason" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Estimate" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Ticket" Relationship="Self.FK_Enhance_Ticket" FromRole="EnhancementAttributes" ToRole="Tickets" />
+        </EntityType>
+        <EntityType Name="TaskAttribute">
+          <Key>
+            <PropertyRef Name="TaskAttrID" />
+          </Key>
+          <Property Name="TaskAttrID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TicketID" Type="Int32" Nullable="false" />
+          <Property Name="ProjectName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DueDate" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Ticket" Relationship="Self.FK_Task_Ticket" FromRole="TaskAttributes" ToRole="Tickets" />
+        </EntityType>
+        <EntityType Name="Ticket">
+          <Key>
+            <PropertyRef Name="TicketID" />
+          </Key>
+          <Property Name="TicketID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Summary" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Priority" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Submitter" Type="Int32" Nullable="false" />
+          <Property Name="Assigned" Type="Int32" Nullable="false" />
+          <Property Name="TicketTypeID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="BugAttributes" Relationship="Self.FK_Bug_Ticket" FromRole="Tickets" ToRole="BugAttributes" />
+          <NavigationProperty Name="EnhancementAttributes" Relationship="Self.FK_Enhance_Ticket" FromRole="Tickets" ToRole="EnhancementAttributes" />
+          <NavigationProperty Name="TaskAttributes" Relationship="Self.FK_Task_Ticket" FromRole="Tickets" ToRole="TaskAttributes" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Assigned_User" FromRole="Tickets" ToRole="Users" />
+          <NavigationProperty Name="User1" Relationship="Self.FK_Submit_User" FromRole="Tickets" ToRole="Users" />
+          <NavigationProperty Name="TicketType" Relationship="Self.FK_Tickets_TicketType" FromRole="Tickets" ToRole="TicketType" />
+          <NavigationProperty Name="WatchingUsers" Relationship="Self.FK_Watching_Ticket" FromRole="Tickets" ToRole="WatchingUsers" />
+        </EntityType>
+        <EntityType Name="TicketType">
+          <Key>
+            <PropertyRef Name="TicketTypeID" />
+          </Key>
+          <Property Name="TicketTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Tickets" Relationship="Self.FK_Tickets_TicketType" FromRole="TicketType" ToRole="Tickets" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Department" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Enabled" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Tickets" Relationship="Self.FK_Assigned_User" FromRole="Users" ToRole="Tickets" />
+          <NavigationProperty Name="Tickets1" Relationship="Self.FK_Submit_User" FromRole="Users" ToRole="Tickets" />
+          <NavigationProperty Name="WatchingUsers" Relationship="Self.FK_Watching_Users" FromRole="Users" ToRole="WatchingUsers" />
+        </EntityType>
+        <EntityType Name="WatchingUser">
+          <Key>
+            <PropertyRef Name="WatchingUserID" />
+          </Key>
+          <Property Name="WatchingUserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="TicketID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Ticket" Relationship="Self.FK_Watching_Ticket" FromRole="WatchingUsers" ToRole="Tickets" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Watching_Users" FromRole="WatchingUsers" ToRole="Users" />
+        </EntityType>
+        <Association Name="FK_Bug_Ticket">
+          <End Role="Tickets" Type="Self.Ticket" Multiplicity="1" />
+          <End Role="BugAttributes" Type="Self.BugAttribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tickets">
+              <PropertyRef Name="TicketID" />
+            </Principal>
+            <Dependent Role="BugAttributes">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Enhance_Ticket">
+          <End Role="Tickets" Type="Self.Ticket" Multiplicity="1" />
+          <End Role="EnhancementAttributes" Type="Self.EnhancementAttribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tickets">
+              <PropertyRef Name="TicketID" />
+            </Principal>
+            <Dependent Role="EnhancementAttributes">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Task_Ticket">
+          <End Role="Tickets" Type="Self.Ticket" Multiplicity="1" />
+          <End Role="TaskAttributes" Type="Self.TaskAttribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tickets">
+              <PropertyRef Name="TicketID" />
+            </Principal>
+            <Dependent Role="TaskAttributes">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Assigned_User">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="Tickets" Type="Self.Ticket" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Tickets">
+              <PropertyRef Name="Assigned" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Submit_User">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="Tickets" Type="Self.Ticket" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Tickets">
+              <PropertyRef Name="Submitter" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tickets_TicketType">
+          <End Role="TicketType" Type="Self.TicketType" Multiplicity="1" />
+          <End Role="Tickets" Type="Self.Ticket" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TicketType">
+              <PropertyRef Name="TicketTypeID" />
+            </Principal>
+            <Dependent Role="Tickets">
+              <PropertyRef Name="TicketTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Watching_Ticket">
+          <End Role="Tickets" Type="Self.Ticket" Multiplicity="1" />
+          <End Role="WatchingUsers" Type="Self.WatchingUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tickets">
+              <PropertyRef Name="TicketID" />
+            </Principal>
+            <Dependent Role="WatchingUsers">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Watching_Users">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="WatchingUsers" Type="Self.WatchingUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="WatchingUsers">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TicketContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="BugAttributes" EntityType="Self.BugAttribute" />
+          <EntitySet Name="EnhancementAttributes" EntityType="Self.EnhancementAttribute" />
+          <EntitySet Name="TaskAttributes" EntityType="Self.TaskAttribute" />
+          <EntitySet Name="Tickets" EntityType="Self.Ticket" />
+          <EntitySet Name="TicketTypes" EntityType="Self.TicketType" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="WatchingUsers" EntityType="Self.WatchingUser" />
+          <AssociationSet Name="FK_Bug_Ticket" Association="Self.FK_Bug_Ticket">
+            <End Role="Tickets" EntitySet="Tickets" />
+            <End Role="BugAttributes" EntitySet="BugAttributes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Enhance_Ticket" Association="Self.FK_Enhance_Ticket">
+            <End Role="Tickets" EntitySet="Tickets" />
+            <End Role="EnhancementAttributes" EntitySet="EnhancementAttributes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_Ticket" Association="Self.FK_Task_Ticket">
+            <End Role="Tickets" EntitySet="Tickets" />
+            <End Role="TaskAttributes" EntitySet="TaskAttributes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Assigned_User" Association="Self.FK_Assigned_User">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Submit_User" Association="Self.FK_Submit_User">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tickets_TicketType" Association="Self.FK_Tickets_TicketType">
+            <End Role="TicketType" EntitySet="TicketTypes" />
+            <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Watching_Ticket" Association="Self.FK_Watching_Ticket">
+            <End Role="Tickets" EntitySet="Tickets" />
+            <End Role="WatchingUsers" EntitySet="WatchingUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Watching_Users" Association="Self.FK_Watching_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="WatchingUsers" EntitySet="WatchingUsers" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="TicketDB_TGModelStoreContainer" CdmEntityContainer="TicketContext">
+          <EntitySetMapping Name="BugAttributes">
+            <EntityTypeMapping TypeName="TicketDB_TGModel.BugAttribute">
+              <MappingFragment StoreEntitySet="BugAttributes">
+                <ScalarProperty Name="BugAttrID" ColumnName="BugAttrID" />
+                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
+                <ScalarProperty Name="Severity" ColumnName="Severity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EnhancementAttributes">
+            <EntityTypeMapping TypeName="TicketDB_TGModel.EnhancementAttribute">
+              <MappingFragment StoreEntitySet="EnhancementAttributes">
+                <ScalarProperty Name="EnhanceAttrID" ColumnName="EnhanceAttrID" />
+                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
+                <ScalarProperty Name="Software" ColumnName="Software" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="Reason" ColumnName="Reason" />
+                <ScalarProperty Name="Estimate" ColumnName="Estimate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TaskAttributes">
+            <EntityTypeMapping TypeName="TicketDB_TGModel.TaskAttribute">
+              <MappingFragment StoreEntitySet="TaskAttributes">
+                <ScalarProperty Name="TaskAttrID" ColumnName="TaskAttrID" />
+                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
+                <ScalarProperty Name="ProjectName" ColumnName="ProjectName" />
+                <ScalarProperty Name="DueDate" ColumnName="DueDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tickets">
+            <EntityTypeMapping TypeName="TicketDB_TGModel.Ticket">
+              <MappingFragment StoreEntitySet="Tickets">
+                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
+                <ScalarProperty Name="Summary" ColumnName="Summary" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="Submitter" ColumnName="Submitter" />
+                <ScalarProperty Name="Assigned" ColumnName="Assigned" />
+                <ScalarProperty Name="TicketTypeID" ColumnName="TicketTypeID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TicketTypes">
+            <EntityTypeMapping TypeName="TicketDB_TGModel.TicketType">
+              <MappingFragment StoreEntitySet="TicketType">
+                <ScalarProperty Name="TicketTypeID" ColumnName="TicketTypeID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="TicketDB_TGModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Department" ColumnName="Department" />
+                <ScalarProperty Name="Enabled" ColumnName="Enabled" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WatchingUsers">
+            <EntityTypeMapping TypeName="TicketDB_TGModel.WatchingUser">
+              <MappingFragment StoreEntitySet="WatchingUsers">
+                <ScalarProperty Name="WatchingUserID" ColumnName="WatchingUserID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
