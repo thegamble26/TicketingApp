@@ -19,7 +19,7 @@ namespace TGTicketingAppEF
             Console.WriteLine("Watching Users:");
             foreach(var u in this.WatchingUsers)
             {
-                Console.WriteLine("UserID: {0} - Name: {1}", u.User.UserID, this.User.FirstName + " " + this.User.LastName);
+                Console.WriteLine("UserID: {0} - Name: {1}", u.User.UserID, u.User.FirstName + " " + u.User.LastName);
             }
         }
     }
