@@ -65,9 +65,16 @@ namespace TGTicketingAppEF
                                     record.DisplayTickets();
                                 }
                             }
+                            logger.Info("{0} was search, {1} returned", entry, tCount);
+                            Console.WriteLine();
+                            Console.WriteLine("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
+                            Console.WriteLine();
+                            break;
                         }
                         else if (LSelection == "2") // Add
-                        { }
+                        {
+
+                        }
                         else if (LSelection == "3") // Update
                         { }
                         else if (LSelection == "4") // Exit
