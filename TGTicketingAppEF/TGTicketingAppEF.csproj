@@ -72,7 +72,6 @@
     <Compile Include="Ticket.cs">
       <DependentUpon>TicketingModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="TicketCLR.cs" />
     <Compile Include="TicketingModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -95,7 +94,6 @@
     <Compile Include="User.cs">
       <DependentUpon>TicketingModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Users.cs" />
     <Compile Include="WatchingUser.cs">
       <DependentUpon>TicketingModel.tt</DependentUpon>
     </Compile>
