@@ -21,7 +21,6 @@ namespace TGTicketingAppEF
             string MSelection = Console.ReadLine().Trim();
             string LSelection = "";
 
-            // connect to DB
             logger.Debug("Starting application");
 
             do
@@ -29,12 +28,16 @@ namespace TGTicketingAppEF
                 // User search removed to Notepad for easier look at Ticket
                 if (MSelection == "2") // Tickets
                 {
+                    logger.Debug("Ticket Records Accessed)");
+
                     TicketMenu();
                     LSelection = Console.ReadLine().Trim();
                     do
                     {
-                        if (LSelection == "1") // Display
+                        if (LSelection == "1") // Display Ticket Records
                         {
+                            logger.Debug("Searching Ticket Records");
+
                             Console.WriteLine("You chose Display Tickets");
                             int tCount = 0;
 
@@ -73,6 +76,8 @@ namespace TGTicketingAppEF
                         }
                         else if (LSelection == "2") // Add
                         {
+                            logger.Debug("New Ticket Record");
+
                             Console.WriteLine("Enter a summary");
                             var sum = Console.ReadLine();
                             Console.WriteLine("Enter priority level");
@@ -102,12 +107,16 @@ namespace TGTicketingAppEF
 
                                 Console.WriteLine("Enter the user ID of the submitter");
                                 var sUser = Console.ReadLine();
+
+                                // validate userID
                                 int subUser = 0;
                                 while(!int.TryParse(sUser, out subUser))
                                 {
                                     Console.WriteLine("Enter the numerical user ID of the submitter");
                                     sUser = Console.ReadLine();
+                                    logger.Debug("Invalid UserID");
                                 }
+
                                 var user = dbContext.Users.Where(u => u.UserID == subUser).FirstOrDefault();
                                 if (user != null)
                                 {
@@ -123,7 +132,16 @@ namespace TGTicketingAppEF
 
                                     if (addUser != "end")
                                     {
-                                        int aUser = Convert.ToInt32(addUser);
+                                        int aUser = 0;
+
+                                        // validate userID
+                                        while (!int.TryParse(addUser, out aUser))
+                                        {
+                                            Console.WriteLine("Enter the numerical user ID of the submitter");
+                                            addUser = Console.ReadLine();
+                                            logger.Debug("Invalid UserID");
+                                        }
+
                                         user = dbContext.Users.Where(u => u.UserID == aUser).FirstOrDefault();
 
                                         if (user != null)
@@ -174,6 +192,7 @@ namespace TGTicketingAppEF
             return;
         }
 
+        //Display Main Menu
         public static void DisplayMenu(bool First)
         {
             if (First)
@@ -186,6 +205,7 @@ namespace TGTicketingAppEF
             Console.WriteLine("3) Exit Application");
         }
 
+        //Display Menu for User Record Interactions
         public static void UserMenu()
         {
             Console.WriteLine("1) Display User Information");
@@ -194,6 +214,7 @@ namespace TGTicketingAppEF
             Console.WriteLine("4) Exit Application");
         }
 
+        //Display Menu for Ticket Record Interactions
         public static void TicketMenu()
         {
             Console.WriteLine("1) Display Tickets");
