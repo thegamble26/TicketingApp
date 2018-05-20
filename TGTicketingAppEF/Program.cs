@@ -80,26 +80,61 @@ namespace TGTicketingAppEF
 
                             Console.WriteLine("Enter a summary");
                             var sum = Console.ReadLine();
-                            Console.WriteLine("Enter priority level");
-                            var priority = Console.ReadLine();
-                            Console.WriteLine("Enter the status of ticket");
-                            Console.WriteLine("1) Open");
-                            Console.WriteLine("2) Closed");
-                            string stats = Console.ReadLine();
+                            var priority = "";
+                            string stats;
+                            var valid = false;
+                            do
+                            {
+                                TicketPriority();
+                                priority = Console.ReadLine();
+                                if (priority.Trim() == "1")
+                                {
+                                    priority = "Low";
+                                    logger.Debug("Priority Added");
+                                    valid = true;
+                                }
+                                else if (priority.Trim() == "2")
+                                {
+                                    priority = "Medium";
+                                    logger.Debug("Priority Added");
+                                    valid = true;
+                                }
+                                else if (priority.Trim() == "3")
+                                {
+                                    priority = "High";
+                                    logger.Debug("Priority Added");
+                                    valid = true;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Bad Input");
+                                    break;
+                                }
+                            } while (valid == false);
 
-                            if (stats.Trim() == "1")
+                            do
                             {
-                                stats = "Open";
-                            }
-                            else if (stats.Trim() == "2")
-                            {
-                                stats = "Closed";
-                            }
-                            else
-                            {
-                                Console.WriteLine("Bad input");
-                                break;
-                            }
+                                TicketStatus();
+                                stats = Console.ReadLine();
+
+                                if (stats.Trim() == "1")
+                                {
+                                    stats = "Open";
+                                    logger.Debug("Status Added");
+                                    valid = true;
+                                }
+                                else if (stats.Trim() == "2")
+                                {
+                                    stats = "Closed";
+                                    logger.Debug("Status Added");
+                                    valid = true;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Bad input");
+                                    break;
+                                }
+                            } while (valid == false);
 
                             using (var dbContext = new TicketContext())
                             {
@@ -126,13 +161,12 @@ namespace TGTicketingAppEF
 
                                 // validate userID
                                 int subUser = 0;
-                                while(!int.TryParse(sUser, out subUser))
+                                while (!int.TryParse(sUser, out subUser))
                                 {
-                                    Console.WriteLine("Enter the numerical user ID of the submitter");
+                                    Console.WriteLine("Enter the numerical user ID");
                                     sUser = Console.ReadLine();
                                     logger.Debug("Invalid UserID");
                                 }
-
                                 var user = dbContext.Users.Where(u => u.UserID == subUser).FirstOrDefault();
                                 if (user != null)
                                 {
@@ -237,10 +271,7 @@ namespace TGTicketingAppEF
                                         // New Priority
                                         do
                                         {
-                                            Console.WriteLine("Enter a new priority for the ticket");
-                                            Console.WriteLine("1) Low");
-                                            Console.WriteLine("2) Medium");
-                                            Console.WriteLine("3) High");
+                                            TicketPriority();
                                             var newPrior = Console.ReadLine();
                                         
                                             if (newPrior.Trim() == "1")
@@ -275,9 +306,7 @@ namespace TGTicketingAppEF
                                         // New Status
                                         do
                                         {
-                                            Console.WriteLine("Enter new status of ticket");
-                                            Console.WriteLine("1) Open");
-                                            Console.WriteLine("2) Closed");
+                                            TicketStatus();
                                             var newStat = Console.ReadLine();
                                         
                                             if (newStat.Trim() == "1")
@@ -412,5 +441,30 @@ namespace TGTicketingAppEF
             Console.WriteLine("3) Update Existing Ticket");
             Console.WriteLine("4) Exit Application");
         }
+
+        public static void TicketStatus()
+        {
+            Console.WriteLine("Enter status of ticket");
+            Console.WriteLine("1) Open");
+            Console.WriteLine("2) Closed");
+        }
+
+        public static void TicketPriority()
+        {
+            Console.WriteLine("Enter priority of ticket");
+            Console.WriteLine("1) Low");
+            Console.WriteLine("2) Medium");
+            Console.WriteLine("3) High");
+        }
+
+        public void ValidateUserID(string test, int IDint)
+        {
+            while (!int.TryParse(test, out IDint))
+            {
+                Console.WriteLine("Enter the numerical user ID");
+                test = Console.ReadLine();
+                logger.Debug("Invalid UserID");
+            }
+        }
     }
- }
+}

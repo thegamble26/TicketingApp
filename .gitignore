@@ -259,3 +259,12 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/TicketingCLR/TicketingCLR.sln
+/TicketingCLRJoin/TicketingCLRJoin.sln
+/TicketingCLRJoinQuery.sql
+/TicketingCLR/TicketingCLR/TicketingCLR.csproj
+/TicketingCLRJoin/TicketingCLRJoin
+/TicketingCLR/TicketingCLR
+/TGTicketingAppEF/TicketCLR.cs
+/TGTicketingAppEF/TicketingCLRQuery.sql
+/TGTicketingAppEF/Users.cs
