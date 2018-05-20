@@ -100,9 +100,14 @@ namespace TGTicketingAppEF
 
                                 record.TicketType = typeCheck;
 
-                                
                                 Console.WriteLine("Enter the user ID of the submitter");
-                                int subUser = Convert.ToInt32(Console.ReadLine());
+                                var sUser = Console.ReadLine();
+                                int subUser = 0;
+                                while(!int.TryParse(sUser, out subUser))
+                                {
+                                    Console.WriteLine("Enter the numerical user ID of the submitter");
+                                    sUser = Console.ReadLine();
+                                }
                                 var user = dbContext.Users.Where(u => u.UserID == subUser).FirstOrDefault();
                                 if (user != null)
                                 {
