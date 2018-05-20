@@ -82,8 +82,24 @@ namespace TGTicketingAppEF
                             var sum = Console.ReadLine();
                             Console.WriteLine("Enter priority level");
                             var priority = Console.ReadLine();
-                            Console.WriteLine("Enter the status of the ticket");
-                            var stats = Console.ReadLine();
+                            Console.WriteLine("Enter the status of ticket");
+                            Console.WriteLine("1) Open");
+                            Console.WriteLine("2) Closed");
+                            string stats = Console.ReadLine();
+
+                            if (stats.Trim() == "1")
+                            {
+                                stats = "Open";
+                            }
+                            else if (stats.Trim() == "2")
+                            {
+                                stats = "Closed";
+                            }
+                            else
+                            {
+                                Console.WriteLine("Bad input");
+                                break;
+                            }
 
                             using (var dbContext = new TicketContext())
                             {
@@ -122,7 +138,10 @@ namespace TGTicketingAppEF
                                 {
                                     User u = new User();
                                     u.UserID = subUser;
+
+                                    // add an submitter and create WatchingUser item
                                     record.Submitter = u.UserID;
+                                    record.WatchingUsers.Add(new WatchingUser { UserID = u.UserID });
                                 }
                                 string addUser = "";
                                 do
@@ -148,8 +167,10 @@ namespace TGTicketingAppEF
                                         {
                                             User u = new User();
                                             u.UserID = aUser;
+
+                                            // add an assigned user and create a new WatchingUser item
                                             record.Assigned = u.UserID;
-                                            record.WatchingUsers.Add(new WatchingUser { UserID = u.UserID }); // this should add an assigned user, creating a new WatchingUser item
+                                            record.WatchingUsers.Add(new WatchingUser { UserID = u.UserID }); 
                                         }
                                     }
                                 } while (addUser != "end");
@@ -165,7 +186,174 @@ namespace TGTicketingAppEF
                             break;
                         }
                         else if (LSelection == "3") // Update
-                        { }
+                        {
+                            logger.Debug("Updating Ticket Record");
+                            Console.WriteLine("Enter search term for ticket to update");
+                            var entry = Console.ReadLine();
+                            using (var dbContext = new TicketContext())
+                            {
+                                var results = dbContext.Tickets
+                                .Include(x => x.WatchingUsers.Select(u => u.User))
+                                .Include(t => t.TicketType)
+                                .Where(d => d.Summary.Contains(entry))
+                                .ToList();
+
+                                int tCount = 0;
+                                foreach (var record in results)
+                                {
+                                    tCount++;
+
+                                    if (tCount % 20 == 0)
+                                    {
+                                        Console.WriteLine("Display more records? y/n");
+                                        string continueDisp = Console.ReadLine();
+                                        if (continueDisp.ToUpper() == "N")
+                                        {
+                                            break;
+                                        }
+                                    }
+                                    record.DisplayTickets();
+                                }
+
+                                //ensure TicketID in db
+                                var valid = false;
+                                Console.WriteLine("Enter the TicketID of the ticket to update");
+                                string tID = Console.ReadLine();
+                                int tIDint;
+                                do
+                                {
+                                    while (!int.TryParse(tID, out tIDint))
+                                    {
+                                        Console.WriteLine("Enter the numerical TicketID of the ticket to update");
+                                        tID = Console.ReadLine();
+                                        logger.Debug("Invalid data type TicketID");
+                                    }
+                                    var ticket = dbContext.Tickets.Where(t => t.TicketID == tIDint).FirstOrDefault();
+                                    if (ticket != null)
+                                    {
+                                        valid = true;
+                                        ticket.TicketID = tIDint;
+                                        logger.Debug("Updating Ticket Record {0}", tIDint);
+                                        // New Priority
+                                        do
+                                        {
+                                            Console.WriteLine("Enter a new priority for the ticket");
+                                            Console.WriteLine("1) Low");
+                                            Console.WriteLine("2) Medium");
+                                            Console.WriteLine("3) High");
+                                            var newPrior = Console.ReadLine();
+                                        
+                                            if (newPrior.Trim() == "1")
+                                            {
+                                                newPrior = "Low";
+                                                ticket.Priority = newPrior;
+                                                valid = true;
+                                                logger.Debug("Priority Updated");
+                                            }
+                                            else if (newPrior.Trim() == "2")
+                                            {
+                                                newPrior = "Medium";
+                                                ticket.Priority = newPrior;
+                                                valid = true;
+                                                logger.Debug("Priority Updated");
+                                            }
+                                            else if (newPrior.Trim() == "3")
+                                            {
+                                                newPrior = "High";
+                                                ticket.Priority = newPrior;
+                                                valid = true;
+                                                logger.Debug("Priority Updated");
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine("Bad input");
+                                                Console.WriteLine();
+                                                valid = false;
+                                            }
+                                        } while (valid == false);
+
+                                        // New Status
+                                        do
+                                        {
+                                            Console.WriteLine("Enter new status of ticket");
+                                            Console.WriteLine("1) Open");
+                                            Console.WriteLine("2) Closed");
+                                            var newStat = Console.ReadLine();
+                                        
+                                            if (newStat.Trim() == "1")
+                                            {
+                                                newStat = "Open";
+                                                ticket.Status = newStat;
+                                                valid = true;
+                                                logger.Debug("Status Updated");
+                                            }
+                                            else if (newStat.Trim() == "2")
+                                            {
+                                                newStat = "Closed";
+                                                ticket.Status = newStat;
+                                                valid = true;
+                                                logger.Debug("Status Updated");
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine("Bad input");
+                                                Console.WriteLine();
+                                                valid = false;
+                                            }
+                                        } while (valid == false);
+
+                                        // Add new Assigned and WatchingUsers
+                                        string addUser = "";
+                                        do
+                                        {
+                                            Console.WriteLine("Enter a user ID - when finished enter 'end'");
+                                            addUser = Console.ReadLine();
+
+                                            if (addUser != "end")
+                                            {
+                                                int aUser = 0;
+
+                                                // validate userID
+                                                while (!int.TryParse(addUser, out aUser))
+                                                {
+                                                    Console.WriteLine("Enter the numerical user ID of the submitter");
+                                                    addUser = Console.ReadLine();
+                                                    logger.Debug("Invalid UserID");
+                                                }
+
+                                                var user = dbContext.Users.Where(u => u.UserID == aUser).FirstOrDefault();
+
+                                                if (user != null)
+                                                {
+                                                    User u = new User();
+                                                    u.UserID = aUser;
+
+                                                    // add an assigned user and create a new WatchingUser item
+                                                    ticket.Assigned = u.UserID;
+                                                    ticket.WatchingUsers.Add(new WatchingUser { UserID = u.UserID });
+                                                }
+                                            }
+                                        } while (addUser != "end");
+
+                                        // save changes
+                                        dbContext.SaveChanges();
+                                        Console.WriteLine("You updated {0}", tID);
+                                        logger.Trace("Ticket {0} was updated", tID);
+                                    }
+                                    else
+                                    {
+                                        valid = false;
+                                    }
+
+                                } while (valid == false);
+                            }
+
+                                Console.WriteLine();
+                                Console.WriteLine("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
+                                Console.WriteLine();
+                                break;
+                            }
+
                         else if (LSelection == "4") // Exit
                         {
                             return;
@@ -173,6 +361,7 @@ namespace TGTicketingAppEF
                         else
                         {
                             Console.WriteLine("Bad Input");
+                            Console.WriteLine();
                             break;
                         }
                     } while (LSelection != "4");
@@ -184,6 +373,7 @@ namespace TGTicketingAppEF
                 else
                 {
                     Console.WriteLine("Bad Input");
+                    Console.WriteLine();
                     break;
                 }
                 DisplayMenu(false);
