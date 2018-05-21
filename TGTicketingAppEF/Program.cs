@@ -214,12 +214,15 @@ namespace TGTicketingAppEF
                                     logger.Debug("Invalid UserID");
                                 }
                                 var user = dbContext.Users.Where(u => u.UserID == subUser).FirstOrDefault();
+
+                                // ensure user in database
                                 while (user == null)
                                 {
                                     Console.WriteLine("Enter a valid User ID");
                                     subUser = Convert.ToInt32(Console.ReadLine());
                                     user = dbContext.Users.Where(u => u.UserID == subUser).FirstOrDefault();
                                 }
+
                                 if (user != null)
                                 {
                                     User u = new User();
@@ -248,12 +251,14 @@ namespace TGTicketingAppEF
                                         }
 
                                         user = dbContext.Users.Where(u => u.UserID == aUser).FirstOrDefault();
+
+                                        // ensure user in database
                                         while (user == null)
                                         {
                                             Console.WriteLine("Enter valid User ID");
                                             aUser = Convert.ToInt32(Console.ReadLine());
                                             user = dbContext.Users.Where(u => u.UserID == aUser).FirstOrDefault();
-                                                                                    }
+                                        }
                                         if (user != null)
                                         {
                                             User u = new User();
@@ -408,6 +413,13 @@ namespace TGTicketingAppEF
                                                 }
 
                                                 var user = dbContext.Users.Where(u => u.UserID == aUser).FirstOrDefault();
+                                                // ensure user in database
+                                                while (user == null)
+                                                {
+                                                    Console.WriteLine("Enter a valid user ID");
+                                                    aUser = Convert.ToInt32(Console.ReadLine());
+                                                    user = dbContext.Users.Where(u => u.UserID == aUser).FirstOrDefault();
+                                                }
 
                                                 if (user != null)
                                                 {
