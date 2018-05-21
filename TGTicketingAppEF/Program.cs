@@ -193,11 +193,26 @@ namespace TGTicketingAppEF
                                         tt.Description = ttype;
 
                                         // ensure that new ticket type was added to database
-                                        do
+                                        var attempt = 0;
+                                        while (attempt < 5)
                                         {
+                                            do
+                                            {
+                                                typeCheck = dbContext.TicketTypes.Where(t => t.Description == ttype).SingleOrDefault();
+                                            } while (typeCheck == null);
+                                            attempt++;
+                                        }
+                                        if (typeCheck != null)
+                                        {
+                                            record.TicketType = typeCheck;
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Ticket Type could not be added to database, type defaulted to Task");
+                                            ttype = "Task";
                                             typeCheck = dbContext.TicketTypes.Where(t => t.Description == ttype).SingleOrDefault();
-                                        } while (typeCheck == null);
-                                        record.TicketType = typeCheck;
+                                            record.TicketType = typeCheck;
+                                        }
                                     }
                                     else { }
                                 } while (valid == false);
