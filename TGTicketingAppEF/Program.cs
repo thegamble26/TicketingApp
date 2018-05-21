@@ -26,7 +26,12 @@ namespace TGTicketingAppEF
             do
             {
                 // User search removed to Notepad for easier look at Ticket
-                if (MSelection == "2") // Tickets
+                if (MSelection == "1")
+                {
+                    Console.WriteLine("Thank you for participating");
+                    Console.WriteLine();
+                }
+                else if (MSelection == "2") // Tickets
                 {
                     logger.Debug("Ticket Records Accessed)");
 
@@ -83,6 +88,8 @@ namespace TGTicketingAppEF
                             var priority = "";
                             string stats;
                             var valid = false;
+
+                            // determine ticket priority
                             do
                             {
                                 TicketPriority();
@@ -112,6 +119,7 @@ namespace TGTicketingAppEF
                                 }
                             } while (valid == false);
 
+                            // determine ticket status
                             do
                             {
                                 TicketStatus();
@@ -146,15 +154,53 @@ namespace TGTicketingAppEF
 
                                 TicketType typeCheck = null;
 
+                                // determine ticket type
+                                TicketTypeMenu();
+                                var ttype = Console.ReadLine();
                                 do
                                 {
-                                    Console.WriteLine("Enter the ticket type");
-                                    var ttype = Console.ReadLine();
+                                    if (ttype == "1")
+                                    {
+                                        ttype = "Enhancement";
+                                        typeCheck = dbContext.TicketTypes.Where(t => t.Description == ttype).SingleOrDefault();
+                                        record.TicketType = typeCheck;
+                                        logger.Debug("Ticket Type Generated: {0}", ttype);
+                                    }
+                                    else if (ttype == "2")
+                                    {
+                                        ttype = "Bug";
+                                        typeCheck = dbContext.TicketTypes.Where(t => t.Description == ttype).SingleOrDefault();
+                                        record.TicketType = typeCheck;
+                                        logger.Debug("Ticket Type Generated: {0}", ttype);
+                                    }
+                                    else if (ttype == "3")
+                                    {
+                                        ttype = "Task";
+                                        typeCheck = dbContext.TicketTypes.Where(t => t.Description == ttype).SingleOrDefault();
+                                        record.TicketType = typeCheck;
+                                        logger.Debug("Ticket Type Generated: {0}", ttype);
+                                    }
+                                    else if (ttype == "4")
+                                    {
+                                        // ensure that ticket type is actually new
+                                        do
+                                        {
+                                            Console.WriteLine("Enter name of new ticket type to create");
+                                            ttype = Console.ReadLine();
+                                            typeCheck = dbContext.TicketTypes.Where(t => t.Description == ttype).SingleOrDefault();
+                                        } while (typeCheck != null);
+                                        var tt = new TicketType();
+                                        tt.Description = ttype;
 
-                                    typeCheck = dbContext.TicketTypes.Where(t => t.Description == ttype).SingleOrDefault();
-                                } while (typeCheck == null);
-
-                                record.TicketType = typeCheck;
+                                        // ensure that new ticket type was added to database
+                                        do
+                                        {
+                                            typeCheck = dbContext.TicketTypes.Where(t => t.Description == ttype).SingleOrDefault();
+                                        } while (typeCheck == null);
+                                        record.TicketType = typeCheck;
+                                    }
+                                    else { }
+                                } while (valid == false);
 
                                 Console.WriteLine("Enter the user ID of the submitter");
                                 var sUser = Console.ReadLine();
@@ -168,6 +214,12 @@ namespace TGTicketingAppEF
                                     logger.Debug("Invalid UserID");
                                 }
                                 var user = dbContext.Users.Where(u => u.UserID == subUser).FirstOrDefault();
+                                while (user == null)
+                                {
+                                    Console.WriteLine("Enter a valid User ID");
+                                    subUser = Convert.ToInt32(Console.ReadLine());
+                                    user = dbContext.Users.Where(u => u.UserID == subUser).FirstOrDefault();
+                                }
                                 if (user != null)
                                 {
                                     User u = new User();
@@ -196,7 +248,12 @@ namespace TGTicketingAppEF
                                         }
 
                                         user = dbContext.Users.Where(u => u.UserID == aUser).FirstOrDefault();
-
+                                        while (user == null)
+                                        {
+                                            Console.WriteLine("Enter valid User ID");
+                                            aUser = Convert.ToInt32(Console.ReadLine());
+                                            user = dbContext.Users.Where(u => u.UserID == aUser).FirstOrDefault();
+                                                                                    }
                                         if (user != null)
                                         {
                                             User u = new User();
@@ -420,11 +477,12 @@ namespace TGTicketingAppEF
             }
             Console.WriteLine("Select what you would like to do");
             //Console.WriteLine("1) Users");
+            Console.WriteLine("1) Pretend this Opens User Menu");
             Console.WriteLine("2) Tickets");
             Console.WriteLine("3) Exit Application");
         }
 
-        //Display Menu for User Record Interactions
+        //Display Menu for User Record Interactions - Removed to focus on Ticket Records
         public static void UserMenu()
         {
             Console.WriteLine("1) Display User Information");
@@ -441,14 +499,14 @@ namespace TGTicketingAppEF
             Console.WriteLine("3) Update Existing Ticket");
             Console.WriteLine("4) Exit Application");
         }
-
+        // Display Menu for Ticket Status Options
         public static void TicketStatus()
         {
             Console.WriteLine("Enter status of ticket");
             Console.WriteLine("1) Open");
             Console.WriteLine("2) Closed");
         }
-
+        // Display Menu for Ticket Priority Options
         public static void TicketPriority()
         {
             Console.WriteLine("Enter priority of ticket");
@@ -456,15 +514,14 @@ namespace TGTicketingAppEF
             Console.WriteLine("2) Medium");
             Console.WriteLine("3) High");
         }
-
-        public void ValidateUserID(string test, int IDint)
+        // Display Menu for Ticket Type Options
+        public static void TicketTypeMenu()
         {
-            while (!int.TryParse(test, out IDint))
-            {
-                Console.WriteLine("Enter the numerical user ID");
-                test = Console.ReadLine();
-                logger.Debug("Invalid UserID");
-            }
+            Console.WriteLine("Enter type of ticket to create");
+            Console.WriteLine("1) Enhancement");
+            Console.WriteLine("2) Bug");
+            Console.WriteLine("3) Task");
+            Console.WriteLine("4) Create New");
         }
     }
 }
